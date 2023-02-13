@@ -111,4 +111,5 @@ class SubscriptionDaoIT extends IntegrationTestBase {
                 .status(Status.ACTIVE)
                 .build();
     }
+
 }
