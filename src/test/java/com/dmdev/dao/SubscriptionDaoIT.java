@@ -9,7 +9,9 @@ import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 class SubscriptionDaoIT extends IntegrationTestBase {
@@ -54,7 +56,7 @@ class SubscriptionDaoIT extends IntegrationTestBase {
     void deleteNotExistingEntity() {
         var subscription = subscriptionDao.insert(getSubscription(1, "name1"));
 
-        var actualResult = subscriptionDao.delete(234);
+        var actualResult = subscriptionDao.delete(123456789);
 
         assertFalse(actualResult);
     }
@@ -87,7 +89,7 @@ class SubscriptionDaoIT extends IntegrationTestBase {
 
         var actualResult = subscriptionDao.findByUserId(subscription.getUserId());
 
-        assertThat(actualResult).isNotEmpty();
+        assertThat(actualResult).hasSize(1);
         assertThat(actualResult.get(0)).isEqualTo(subscription);
     }
 

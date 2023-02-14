@@ -22,14 +22,17 @@ class SubscriptionServiceIT extends IntegrationTestBase {
     private SubscriptionDao subscriptionDao;
     private SubscriptionService subscriptionService;
 
+    private Clock clock;
+
     @BeforeEach
     void init() {
         subscriptionDao = SubscriptionDao.getInstance();
+        clock = Clock.systemDefaultZone();
         subscriptionService = new SubscriptionService(
                 subscriptionDao,
                 CreateSubscriptionMapper.getInstance(),
                 CreateSubscriptionValidator.getInstance(),
-                Clock.systemDefaultZone());
+                clock);
     }
 
     @Test
@@ -45,14 +48,15 @@ class SubscriptionServiceIT extends IntegrationTestBase {
     void upsertIfExist() {
         var subscriptionDto = getSubscriptionDto();
         var expectedResult = subscriptionDao.upsert(getSubscription(1, "testName"));
+        expectedResult.setStatus(Status.CANCELED);
 
         var actualResult = subscriptionService.upsert(subscriptionDto);
 
-        assertThat(actualResult.getStatus()).isEqualTo(expectedResult.getStatus());
+        assertThat(actualResult.getStatus()).isNotEqualTo(expectedResult.getStatus());
     }
 
     @Test
-    void cancel () {
+    void cancel() {
         var subscription = subscriptionDao.upsert(getSubscription(1, "testName"));
 
         subscriptionService.cancel(subscription.getId());
@@ -69,6 +73,8 @@ class SubscriptionServiceIT extends IntegrationTestBase {
         var actualResult = subscriptionDao.findById(subscription.getId());
 
         assertThat(actualResult.get().getStatus()).isEqualTo(Status.EXPIRED);
+        assertThat(actualResult.get().getExpirationDate().truncatedTo(ChronoUnit.SECONDS))
+                .isEqualTo(Instant.now(clock).truncatedTo(ChronoUnit.SECONDS));
     }
 
     private Subscription getSubscription(Integer userId, String name) {

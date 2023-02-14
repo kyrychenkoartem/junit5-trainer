@@ -6,8 +6,9 @@ import com.dmdev.entity.Status;
 import com.dmdev.entity.Subscription;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 class CreateSubscriptionMapperTest {
@@ -32,7 +33,7 @@ class CreateSubscriptionMapperTest {
                 .status(Status.ACTIVE)
                 .build();
 
-        Assertions.assertThat(actualResult).isEqualTo(expectedResult);
+        assertThat(actualResult).isEqualTo(expectedResult);
 
     }
 }

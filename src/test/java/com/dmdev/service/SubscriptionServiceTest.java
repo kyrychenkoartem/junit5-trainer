@@ -46,7 +46,6 @@ class SubscriptionServiceTest {
     @InjectMocks
     private SubscriptionService subscriptionService;
 
-
     @Test
     void upsertWhenSubstitutionIsExist() {
         var subscription = getSubscription();
@@ -61,7 +60,6 @@ class SubscriptionServiceTest {
         verifyNoInteractions(createSubscriptionMapper);
         verify(subscriptionDao).upsert(subscription);
     }
-
 
     @Test
     void upsertWhenSubstitutionIsNotExist() {
